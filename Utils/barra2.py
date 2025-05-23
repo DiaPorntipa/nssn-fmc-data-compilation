@@ -32,16 +32,12 @@ def find_nearest_barra2_grid_point(x, y, lon_grid, lat_grid):
     return nearest_lon, nearest_lat
 
 
-def download_all_barra2_data(
-    vars, barra2_cell_locations_list, first_datetime, last_datetime
-):
+def download_all_barra2_data(vars, barra2_cell_locations_list, first_datetime, last_datetime):
     barra2_data_dir = os.path.join("..", "Data", "barra2")
     os.makedirs(barra2_data_dir, exist_ok=True)
 
     for i, (x, y) in enumerate(barra2_cell_locations_list):
-        print(
-            f"Downloading data for barra2 cell coordinate {i + 1} of {len(barra2_cell_locations_list)}"
-        )
+        print(f"Downloading data for barra2 cell coordinate {i + 1} of {len(barra2_cell_locations_list)}")
         current_dt = first_datetime.replace(day=1)
 
         while current_dt <= last_datetime:
@@ -62,13 +58,9 @@ def download_all_barra2_data(
             # Download temperature and relative humidity data
             for var in vars:
                 url = f"https://thredds.nci.org.au/thredds/ncss/grid/ob53/output/reanalysis/AUST-04/BOM/ERA5/historical/hres/BARRA-C2/v1/1hr/{var}/latest/{var}_AUST-04_ERA5_historical_hres_BOM_BARRA-C2_v1_1hr_{yyyymm}-{yyyymm}.nc?var={var}&latitude={y}&longitude={x}&time_start={time_start}&time_end={time_end}&timeStride=&vertCoord=&accept=csv"
-                output_file_path = os.path.join(
-                    barra2_data_dir, f"barra2_data_{var}_{x}_{y}_{yyyymm}.csv"
-                )
+                output_file_path = os.path.join(barra2_data_dir, f"barra2_data_{var}_{x}_{y}_{yyyymm}.csv")
                 print(f"Downloading {output_file_path} from {url}")
-                subprocess.run(
-                    ["curl", "-s", "-L", "-C", "-", "-o", output_file_path, url]
-                )
+                subprocess.run(["curl", "-s", "-L", "-C", "-", "-o", output_file_path, url])
 
             # Go to next month
             if month == 12:
@@ -79,19 +71,12 @@ def download_all_barra2_data(
 
 def get_barra2_value(row, var):
     yyyymm = row["UTC_Datetime"].round("h").strftime("%Y%m")
-    file_path = os.path.join(
-        "..",
-        "Data",
-        "barra2",
-        f"barra2_data_{var}_{row['barra2_X']}_{row['barra2_Y']}_{yyyymm}.csv",
-    )
+    file_path = os.path.join("..", "Data", "barra2", f"barra2_data_{var}_{row['barra2_X']}_{row['barra2_Y']}_{yyyymm}.csv")
     df_barra2 = pd.read_csv(file_path)
 
     target_time = row["UTC_Datetime"].round("h").strftime("%Y-%m-%dT%H:%M:%SZ")
     column_name = df_barra2.columns[df_barra2.columns.str.contains(var)]
-    barra2_value = df_barra2.loc[df_barra2["time"] == target_time, column_name].values[
-        0
-    ][0]
+    barra2_value = df_barra2.loc[df_barra2["time"] == target_time, column_name].values[0][0]
     if var == "tas":
         barra2_value = convert_temperature(barra2_value, "Kelvin", "Celsius")
 
