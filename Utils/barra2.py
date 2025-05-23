@@ -32,7 +32,7 @@ def find_nearest_barra2_grid_point(x, y, lon_grid, lat_grid):
     return nearest_lon, nearest_lat
 
 
-def download_barra2_data(
+def download_all_barra2_data(
     vars, barra2_cell_locations_list, first_datetime, last_datetime
 ):
     barra2_data_dir = os.path.join("..", "Data", "barra2")
@@ -95,4 +95,4 @@ def get_barra2_value(row, var):
     if var == "tas":
         barra2_value = convert_temperature(barra2_value, "Kelvin", "Celsius")
 
-    return round(barra2_value, 3)
+    return barra2_value
