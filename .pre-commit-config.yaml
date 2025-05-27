@@ -16,3 +16,24 @@ repos:
     hooks:
       - id: isort
         args: [--profile=black]
+
+  - repo: https://github.com/psf/black
+    rev: 24.3.0
+    hooks:
+    - id: black
+      args: [
+        "--skip-string-normalization",
+        "--line-length=100",
+        "--preview"
+      ]
+
+  - repo: https://github.com/nbQA-dev/nbQA
+    rev: 1.7.0
+    hooks:
+      - id: nbqa-black
+        args: [
+          "--skip-string-normalization",
+          "--line-length=100",
+          "--preview"
+        ]
+      - id: nbqa-isort

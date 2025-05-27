@@ -1,6 +1,8 @@
 import math
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+
 
 def calculate_vpd(temp, rh):
     if pd.isna(temp) or pd.isna(rh):
