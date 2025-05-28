@@ -14,7 +14,7 @@ from scipy.constants import convert_temperature
 def get_barra2_grid_point():
     # Download one barra2 file to extract grid cells
     url = "https://thredds.nci.org.au/thredds/fileServer/ob53/output/reanalysis/AUST-04/BOM/ERA5/historical/hres/BARRA-C2/v1/1hr/tas/latest/tas_AUST-04_ERA5_historical_hres_BOM_BARRA-C2_v1_1hr_201812-201812.nc"
-    sampled_barra2_file_path = os.path.join('..', '..', 'Data', 'barra2_tas_201812.nc')
+    sampled_barra2_file_path = os.path.join(working_dir, 'Data', 'barra2_tas_201812.nc')
     if not os.path.exists(sampled_barra2_file_path):
         urllib.request.urlretrieve(url, sampled_barra2_file_path)
 
@@ -32,8 +32,9 @@ def find_nearest_barra2_grid_point(x, y, lon_grid, lat_grid):
     return nearest_lon, nearest_lat
 
 
-def download_all_barra2_data(vars, barra2_cell_locations_list, first_datetime, last_datetime):
-    barra2_data_dir = os.path.join('..', '..', 'Data', 'barra2')
+def download_all_barra2_data(
+    vars, barra2_cell_locations_list, first_datetime, last_datetime, barra2_data_dir
+):
     os.makedirs(barra2_data_dir, exist_ok=True)
 
     for i, (x, y) in enumerate(barra2_cell_locations_list):
@@ -73,13 +74,10 @@ def download_all_barra2_data(vars, barra2_cell_locations_list, first_datetime, l
                 current_dt = datetime(year, month + 1, 1)
 
 
-def get_barra2_value(row, var):
+def get_barra2_value(row, var, barra2_data_dir):
     yyyymm = row["UTC_Datetime"].round("h").strftime("%Y%m")
     file_path = os.path.join(
-        '..',
-        '..',
-        'Data',
-        'barra2',
+        barra2_data_dir,
         f"barra2_data_{var}_{row['barra2_X']}_{row['barra2_Y']}_{yyyymm}.csv",
     )
     df_barra2 = pd.read_csv(file_path)
