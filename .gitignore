@@ -1,5 +1,11 @@
 Data/*
-*.csv
+output/csv/*
+output/geojson/*
+output/tif/*
 *.pyc
 miscellaneous.ipynb
 *.png
+.conda/*
+.conda
+Utils/STE_2021_AUST_SHP_GDA2020
+Utils/STE_2021_AUST_SHP_GDA2020/*
