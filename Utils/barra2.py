@@ -11,7 +11,7 @@ import xarray as xr
 from scipy.constants import convert_temperature
 
 
-def get_barra2_grid_point():
+def get_barra2_grid_point(working_dir):
     # Download one barra2 file to extract grid cells
     url = "https://thredds.nci.org.au/thredds/fileServer/ob53/output/reanalysis/AUST-04/BOM/ERA5/historical/hres/BARRA-C2/v1/1hr/tas/latest/tas_AUST-04_ERA5_historical_hres_BOM_BARRA-C2_v1_1hr_201812-201812.nc"
     sampled_barra2_file_path = os.path.join(working_dir, 'Data', 'barra2_tas_201812.nc')
@@ -81,6 +81,8 @@ def get_barra2_value(row, var, barra2_data_dir):
         f"barra2_data_{var}_{row['barra2_X']}_{row['barra2_Y']}_{yyyymm}.csv",
     )
     df_barra2 = pd.read_csv(file_path)
+    if df_barra2.empty:
+        return np.nan
 
     target_time = row["UTC_Datetime"].round("h").strftime("%Y-%m-%dT%H:%M:%SZ")
     column_name = df_barra2.columns[df_barra2.columns.str.contains(var)]
